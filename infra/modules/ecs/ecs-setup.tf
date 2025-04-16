@@ -86,5 +86,3 @@ output "task_execution_role_arn" {
   value = aws_iam_role.ecs_task_execution_role.arn
 }
 
-# if any resources needs re-run,, 
-# terraform apply -target=aws_ecs_cluster.flask_xray_cluster

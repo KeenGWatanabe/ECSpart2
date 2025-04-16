@@ -15,7 +15,8 @@ To use this configuration:
 1. Save it to a file (e.g., `ecs-setup.tf`)
 2. Run `terraform init` to initialize the provider
 3. Run `terraform plan` to see what will be created
-4. Run `terraform apply` to create the resources
+4. Run `terraform apply -target=module.ecs` to create the resources
+4. Run `terraform apply -target=module.vpc` to create the resources
 
 The outputs will show you the ARNs of the created roles and the cluster name, which you can use when defining your ECS task definitions later.
 
