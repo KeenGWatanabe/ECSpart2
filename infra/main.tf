@@ -1,3 +1,7 @@
+provider "aws" {
+  region = "us-east-1"
+}
+
 # modules/main.tf
 module "vpc" {
   source = "./modules/vpc"

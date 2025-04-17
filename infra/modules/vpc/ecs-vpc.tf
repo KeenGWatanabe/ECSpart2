@@ -63,3 +63,12 @@ resource "aws_security_group" "vpc_endpoint" {
     cidr_blocks = [aws_vpc.main.cidr_block]  # Restrict to VPC
   }
 }
+
+resource "aws_vpc_endpoint" "ecr_dkr" {
+  vpc_id              = aws_vpc.main.id
+  service_name        = "com.amazonaws.us-east-1.ecr.dkr"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+  subnet_ids          = aws_subnet.private[*].id
+  security_group_ids  = [aws_security_group.vpc_endpoint.id]
+}

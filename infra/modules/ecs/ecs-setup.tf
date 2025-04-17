@@ -1,6 +1,3 @@
-provider "aws" {
-  region = "us-east-1"
-}
 
 # Create ECS Task Role with X-Ray write access
 resource "aws_iam_role" "ecs_xray_task_role" {
