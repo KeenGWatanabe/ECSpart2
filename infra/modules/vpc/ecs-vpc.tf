@@ -1,6 +1,8 @@
 # Add this to your configuration when ready
 resource "aws_vpc" "main" {
   cidr_block = "10.0.0.0/16"
+  enable_dns_support   = true   # Required for private DNS
+  enable_dns_hostnames = true   # Required for private DNS
   
   tags = {
     Name = "rger-flask-vpc"
@@ -44,15 +46,6 @@ resource "aws_route_table_association" "public" {
   route_table_id = aws_route_table.public.id
 }
 
-# vpc endpoint Secrets Mgr (optional but recommended)
-resource "aws_vpc_endpoint" "secretsmanager" {
-  vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.us-east-1.secretsmanager"
-  vpc_endpoint_type   = "Interface"
-  subnet_ids          = aws_subnet.public[*].id  # Attach to public subnets
-  security_group_ids  = [aws_security_group.vpc_endpoint.id]
-  private_dns_enabled = true
-}
 
 resource "aws_security_group" "vpc_endpoint" {
   vpc_id = aws_vpc.main.id
@@ -64,11 +57,3 @@ resource "aws_security_group" "vpc_endpoint" {
   }
 }
 
-resource "aws_vpc_endpoint" "ecr_dkr" {
-  vpc_id              = aws_vpc.main.id
-  service_name        = "com.amazonaws.us-east-1.ecr.dkr"
-  vpc_endpoint_type   = "Interface"
-  private_dns_enabled = true
-  subnet_ids          = aws_subnet.private[*].id
-  security_group_ids  = [aws_security_group.vpc_endpoint.id]
-}
