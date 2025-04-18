@@ -6,8 +6,8 @@ variable "app_name" {
   type = string
 }
 
-output "vpc_id" {
-  value = aws_vpc.main.id
+variable "vpc_id" {
+  type = string
 }
 
 output "private_subnet_ids" {
