@@ -88,7 +88,7 @@ resource "aws_secretsmanager_secret_version" "db_password" {
 
 # Create ECS Cluster
 resource "aws_ecs_cluster" "flask_xray_cluster" {
-  name = "rger-flask-xray-cluster"
+  name = "rger-flask-xray-cluster-${var.region}" 
 
   setting {
     name  = "containerInsights"
