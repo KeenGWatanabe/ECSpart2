@@ -12,6 +12,7 @@ resource "aws_ecs_task_definition" "flask_xray" {
     {
       name      = "flask-app",
       image     = var.flask_image_uri,
+      #image = "${var.ecr_repository_url}:latest"
       essential = true,
       portMappings = [{
         containerPort = 8080,
