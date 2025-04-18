@@ -1,9 +1,11 @@
 provider "aws" {
-  region = var.region  # Centralized region
+  region = var.region
   default_tags {
     tags = {
-      Environment = "dev"
-      Project    = "rger-app"
+      Project     = "rger-flask-app"
+      ManagedBy   = "Terraform"
     }
   }
 }
+
+data "aws_caller_identity" "current" {}
