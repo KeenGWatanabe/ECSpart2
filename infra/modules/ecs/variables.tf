@@ -43,3 +43,7 @@ variable "account_id" {
   description = "AWS account ID"
   type        = string
 }
+variable "app_name" {}
+variable "alb_security_group_id" {}
+variable "ecr_repository_url" {}
+variable "task_execution_role_arn" {}

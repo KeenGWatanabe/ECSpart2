@@ -87,9 +87,9 @@ resource "aws_secretsmanager_secret_version" "db_password" {
 }
 
 # Create ECS Cluster
-resource "aws_ecs_cluster" "flask_xray_cluster" {
-  name = "rger-flask-xray-cluster-${var.region}" 
-
+resource "aws_ecs_cluster" "main" {
+  name = "${var.app_name}-cluster"
+  
   setting {
     name  = "containerInsights"
     value = "enabled"
@@ -100,17 +100,25 @@ resource "aws_ecs_cluster" "flask_xray_cluster" {
       logging = "DEFAULT"
     }
   }
+
 }
 
-output "ecs_cluster_name" {
-  value = aws_ecs_cluster.flask_xray_cluster.name
+resource "aws_ecs_service" "flask" {
+  name            = "${var.app_name}-service"
+  cluster         = aws_ecs_cluster.main.id
+  task_definition = aws_ecs_task_definition.flask.arn
+  launch_type     = "FARGATE"
+  
+  network_configuration {
+    subnets          = var.private_subnet_ids
+    security_groups  = [aws_security_group.ecs.id]
+  }
+
+  load_balancer {
+    target_group_arn = aws_lb_target_group.app.arn
+    container_name   = "flask-app"
+    container_port   = 8080
+  }
 }
 
-output "task_role_arn" {
-  value = aws_iam_role.ecs_xray_task_role.arn
-}
-
-output "task_execution_role_arn" {
-  value = aws_iam_role.ecs_task_execution_role.arn
-}
 
