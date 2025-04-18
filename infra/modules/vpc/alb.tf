@@ -35,7 +35,7 @@ resource "aws_lb_listener" "http" {
 }
 
 resource "aws_security_group" "alb" {
-  vpc_id = var.vpc_id
+  vpc_id = aws_vpc.main.id
   name   = "rger-alb-sg"
 
   ingress {

@@ -5,7 +5,7 @@ resource "aws_ecs_task_definition" "flask" {
   cpu                      = 256
   memory                   = 512
   execution_role_arn       = var.task_execution_role_arn
-  task_role_arn            = var.task_role_arn
+  task_role_arn            = aws_iam_role.ecs_xray_task_role
 
   container_definitions = jsonencode([
     {

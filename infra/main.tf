@@ -5,6 +5,7 @@ module "vpc" {
   source = "./modules/vpc"
   region = var.region # Pass region to child modules
   app_name = var.app_name
+
 }
 
 module "ecs" {
@@ -14,7 +15,7 @@ module "ecs" {
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnet_ids
   ecr_repository_url = aws_ecr_repository.flask.repository_url
-  alb_security_group_id = aws_security_group.alb.id
+  alb_security_group_id = module.vpc.aws_security_group.alb.id
   flask_image_uri = "${aws_ecr_repository.flask.repository_url}:latest"
   task_execution_role_arn = aws_iam_role.ecs_task_execution_role.arn
   task_role_arn = aws_iam_role.ecs_xray_task_role.arn

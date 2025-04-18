@@ -23,28 +23,6 @@ resource "aws_iam_role_policy_attachment" "ecs_task_execution" {
 }
 
 
-# Create ECS Task Role (for X-Ray write access and Secrets)
-resource "aws_iam_role" "ecs_xray_task_role" {
-  name = "rger-ecs-xray-taskrole"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com"
-        }
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "xray_write_access" {
-  role       = aws_iam_role.ecs_xray_task_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AWSXRayDaemonWriteAccess"
-}
 
 resource "aws_iam_role_policy" "secrets_access" {
   name = "secrets-manager-access"
@@ -55,7 +33,7 @@ resource "aws_iam_role_policy" "secrets_access" {
     Statement = [{
       Action   = ["secretsmanager:GetSecretValue"],
       Effect   = "Allow",
-      Resource = "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:rgerapp/db_password*"
+      Resource = "arn:aws:secretsmanager:${var.region}:${var.account_id}:secret:rgerapp/db_password*"
     }]
   })
 }

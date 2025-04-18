@@ -5,7 +5,7 @@ resource "aws_vpc" "main" {
   enable_dns_hostnames = true   # Required for private DNS
   
   tags = {
-    Name = "rger-flask-vpc"
+    Name = "${var.app_name}-vpc"
   }
 }
 
