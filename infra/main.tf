@@ -87,6 +87,7 @@ resource "aws_security_group" "ecs" {
 # --- ECR Repository ---
 resource "aws_ecr_repository" "app" {
   name = "${local.prefix}-ecr"
+  
 }
 
 # --- ECS Cluster & Service ---
