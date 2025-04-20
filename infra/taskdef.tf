@@ -51,8 +51,8 @@ resource "aws_ecs_task_definition" "flask_app_task" {
           "valueFrom" : aws_ssm_parameter.app_config.arn
         },
         {
-          "name"      : "MY_DB_PW",
-          "valueFrom" : aws_secretsmanager_secret.db_pw.arn
+          "name"      : "MY_DB_PASSWORD",
+          "valueFrom" : aws_secretsmanager_secret.db_password.arn
         }
       ]
     },

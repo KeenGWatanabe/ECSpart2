@@ -13,7 +13,9 @@ https://docs.google.com/document/d/1HkjQakCw2Db82e5dPbWzfqm_BnWK0xHMiWXixuojW4k/
 
 # if iam_role exists, else only run step 1,2 & 4
 3 terraform import aws_iam_role.ecs_exec_role myapp-ecs-exec-role
-4 terraform apply
+4 terraform apply 
+  # if rerun terraform (statefile)
+  terraform refresh 
 
 
 
