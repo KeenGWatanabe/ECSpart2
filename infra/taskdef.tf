@@ -1,11 +1,17 @@
 resource "aws_ecs_task_definition" "flask_app_task" {
   family = "flask-app-xray-family"
+  network_mode             = "awsvpc"       # Required for Fargate
+  requires_compatibilities = ["FARGATE"]    # Explicitly declare Fargate
+  cpu                      = 512            # Required for Fargate
+  memory                   = 1024  
+
+  execution_role_arn       = aws_iam_role.ecs_exec_role.arn
 
   container_definitions = jsonencode([
     {
       "name"              : "flask-app",
-      "image"             : "255945442255.dkr.ecr.us-east-1.amazonaws.com/rger-flask-xray:latest", // Your manually pushed image
-      "memory"            : 512,
+      "image"             :  "${aws_ecr_repository.app.repository_url}:latest" #"255945442255.dkr.ecr.us-east-1.amazonaws.com/rger-flask-xray:latest", // Your manually pushed image
+      "memory"            : 128,
       "cpu"               : 256,
       "essential"         : true,
       "portMappings"      : [
@@ -35,7 +41,7 @@ resource "aws_ecs_task_definition" "flask_app_task" {
       "name"              : "xray-sidecar",
       "image"             : "amazon/aws-xray-daemon",
       "memory"            : 128,
-      "cpu"               : 128,
+      "cpu"               : 256,
       "essential"         : false,
       "portMappings"      : [
         {
@@ -61,7 +67,6 @@ resource "aws_ecs_service" "flask_app_service" {
   cluster         =  module.ecs.cluster_id    // Reference the cluster ID from the ECS module output
   task_definition = aws_ecs_task_definition.flask_app_task.arn
   desired_count   = 1
-
   launch_type = "FARGATE"
 
   network_configuration {
@@ -69,6 +74,10 @@ resource "aws_ecs_service" "flask_app_service" {
     security_groups  = [aws_security_group.ecs.id]
     assign_public_ip = true
   }
-
+ # Add this lifecycle block:
+  lifecycle {
+    ignore_changes = [ task_definition, desired_count ]
+  }
   depends_on = [aws_ecs_task_definition.flask_app_task]
+  
 }
