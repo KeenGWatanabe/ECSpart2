@@ -23,11 +23,11 @@ resource "aws_ecs_task_definition" "flask_app_task" {
       "secrets" : [
         {
           "name"      : "MY_APP_CONFIG",
-          "valueFrom" : "arn:aws:ssm:us-east-1:255945442255:parameter/rgerapp/config"
+          "valueFrom" : aws_ssm_parameter.app_config.arn
         },
         {
           "name"      : "MY_DB_PASSWORD",
-          "valueFrom" : "arn:aws:secretsmanager:us-east-1:255945442255:secret:rgerapp/db_password-LPmvuP"
+          "valueFrom" : aws_secretsmanager_secret.db_password.arn
         }
       ]
     },
@@ -58,7 +58,7 @@ resource "aws_ecs_task_definition" "flask_app_task" {
 # Link Task Definition to ECS Services  
 resource "aws_ecs_service" "flask_app_service" {
   name            = "flask-app-xray-service"
-  cluster         = aws_ecs_cluster.main.id
+  cluster         =  module.ecs.cluster_id    // Reference the cluster ID from the ECS module output
   task_definition = aws_ecs_task_definition.flask_app_task.arn
   desired_count   = 1
 

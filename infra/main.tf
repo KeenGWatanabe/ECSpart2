@@ -90,6 +90,27 @@ resource "aws_ecr_repository" "app" {
   
 }
 
+# --- SSM & Secrets Manager ---
+resource "aws_ssm_parameter" "app_config" {
+  name  = "/rgerapp/config"
+  type  = "String"
+  value = "MySSMConfig"
+  #overwrite = true
+}
+
+resource "aws_secretsmanager_secret" "db_password" {
+  name = "rgerapp/db_password"
+}
+
+resource "aws_secretsmanager_secret_version" "db_password_version" {
+  secret_id     = aws_secretsmanager_secret.db_password.id
+  secret_string = jsonencode({
+    password = "P@ssw0rd"
+  })
+}
+
+
+
 # --- ECS Cluster & Service ---
 module "ecs" {
   depends_on = [ aws_ecr_repository.app ]
