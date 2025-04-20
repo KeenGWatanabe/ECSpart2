@@ -4,7 +4,7 @@ resource "aws_ecs_task_definition" "flask_app_task" {
   container_definitions = jsonencode([
     {
       "name"              : "flask-app",
-      "image"             : "<Your-Flask-App-Image-URI>",
+      "image"             : "255945442255.dkr.ecr.us-east-1.amazonaws.com/rger-flask-xray:latest", // Your manually pushed image
       "memory"            : 512,
       "cpu"               : 256,
       "essential"         : true,

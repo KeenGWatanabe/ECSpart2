@@ -1,7 +1,7 @@
 terraform {
   backend "s3" {
     bucket         = "rgers3.tfstate-backend.com"  # Must match the bucket name above
-    key            = "coaching17/terraform.tfstate"        # State file path
+    key            = "infra/terraform.tfstate"        # State file path
     region         = "us-east-1"                # Same as provider
     dynamodb_table = "terraform-state-locks"    # If using DynamoDB
     # use_lockfile   = true                       # replaces dynamodb_table                
