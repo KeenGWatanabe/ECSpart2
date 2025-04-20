@@ -19,7 +19,9 @@ data "aws_availability_zones" "available" {  # <-- This was missing
 
 locals {
   prefix = "myapp" # Change to your preferred prefix
-}
+ }
+
+
 
 # --- VPC & Networking ---
 resource "aws_vpc" "main" {
@@ -92,14 +94,14 @@ resource "aws_ecr_repository" "app" {
 
 # --- SSM & Secrets Manager ---
 resource "aws_ssm_parameter" "app_config" {
-  name  = "/rgerapp/config"
+  name  = "/${local.prefix}/config"
   type  = "String"
   value = "MySSMConfig"
   #overwrite = true
 }
 
 resource "aws_secretsmanager_secret" "db_password" {
-  name = "rgerapp/db_password"
+  name = "/${local.prefix}/db_password"
 }
 
 resource "aws_secretsmanager_secret_version" "db_password_version" {
@@ -157,10 +159,18 @@ module "ecs" {
       security_group_ids                 = [aws_security_group.ecs.id]
       # Add these required fields
       enable_execute_command = true
-      task_exec_iam_role_arn = aws_iam_role.ecs_exec_role.arn
+      task_exec_iam_role_arn = aws_iam_role.ecs_task_execution_role.arn
     }
   }
 }
+
+# Create CloudWatch Log Group for ECS
+resource "aws_cloudwatch_log_group" "ecs_logs" {
+  name              = "/ecs/${local.prefix}-task"  # Standard naming format
+  retention_in_days = 7  # Adjust retention (1, 3, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, or 3653)
+}
+
+
 # --- Outputs ---
 output "ecr_repository_url" {
   value = aws_ecr_repository.app.repository_url

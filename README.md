@@ -1,9 +1,30 @@
-Follow steps 1 - 4 from this Doc sheet
+run tf-backend
+https://github.com/KeenGWatanabe/tf-backend.git
 
+# CHECK terraform step 5 - 10 (POSSIBLE ERROR IAM ECS exec_roles)
+1 cd /infra
+2 terraform init
+3 terraform apply -target=aws_ecr_repository.app
+
+Follow steps 3 - 4 from this Doc sheet (build and push image to created ECR)
+4 cd /app
 # 3.5 Container Orchestration w ECS2
 https://docs.google.com/document/d/1HkjQakCw2Db82e5dPbWzfqm_BnWK0xHMiWXixuojW4k/edit?tab=t.0
 
-# step 5 - 8 
+# if iam_role exists, else only run step 1,2 & 4
+3 terraform import aws_iam_role.ecs_exec_role myapp-ecs-exec-role
+4 terraform apply
+
+
+
+
+# check image in terraform created ECR
+5 aws ecr list-images --repository-name myapp-ecr --region us-east-1
+
+6 jump to Step 11 Accessing your Service
+
+
+# step 6 - 8 (if not terraforming)
 cd into /terraform folder
 ```
 terraform init

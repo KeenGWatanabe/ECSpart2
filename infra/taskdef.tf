@@ -1,11 +1,22 @@
+locals {
+  log_group_name = "/ecs/${local.prefix}-app"  # Single source of truth
+}
+
+# Reference in both places:
+resource "aws_cloudwatch_log_group" "app" {
+  name = local.log_group_name
+}
+
 resource "aws_ecs_task_definition" "flask_app_task" {
   family = "flask-app-xray-family"
+  depends_on = [ aws_cloudwatch_log_group.ecs_logs ]
   network_mode             = "awsvpc"       # Required for Fargate
   requires_compatibilities = ["FARGATE"]    # Explicitly declare Fargate
   cpu                      = 512            # Required for Fargate
   memory                   = 1024  
 
-  execution_role_arn       = aws_iam_role.ecs_exec_role.arn
+  execution_role_arn       = aws_iam_role.ecs_task_execution_role.arn
+  task_role_arn            = aws_iam_role.ecs_task_role.arn
 
   container_definitions = jsonencode([
     {
@@ -14,6 +25,14 @@ resource "aws_ecs_task_definition" "flask_app_task" {
       "memory"            : 128,
       "cpu"               : 256,
       "essential"         : true,
+       logConfiguration = {  # Critical addition!
+       logDriver = "awslogs",
+       options   = {
+                    "awslogs-group"         =  local.log_group_name # "/ecs/${local.prefix}-task",  # References the log group
+                    "awslogs-region"        = "us-east-1",  # Change if your region differs
+                    "awslogs-stream-prefix" = "ecs"         # Organizes log streams per task
+                    }
+        },
       "portMappings"      : [
         {
           "containerPort": 8080,
@@ -81,3 +100,4 @@ resource "aws_ecs_service" "flask_app_service" {
   depends_on = [aws_ecs_task_definition.flask_app_task]
   
 }
+

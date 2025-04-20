@@ -1,27 +1,29 @@
-# --- IAM Role for ECS Exec ---
-resource "aws_iam_role" "ecs_exec_role" {
-  name_prefix = "${local.prefix}-ecs-exec-role" #add random suffix
 
-  assume_role_policy = jsonencode({
+resource "aws_iam_role_policy" "ecs_secrets_access" {
+  name = "ecs-secrets-access"
+  role = aws_iam_role.ecs_task_execution_role.id
+
+  policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {
-        Action = "sts:AssumeRole"
         Effect = "Allow"
-        Principal = {
-          Service = "ecs-tasks.amazonaws.com"
-        }
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret"
+        ]
+        Resource = [
+          "arn:aws:secretsmanager:us-east-1:255945442255:secret:${local.prefix}/db_password*",
+          # Add other secret ARNs if needed
+        ]
       }
     ]
   })
-  lifecycle {
-    create_before_destroy = true  # Helps with replacements
-  }
 }
 
 resource "aws_iam_role_policy" "ecs_s3_access" {
   name_prefix = "${local.prefix}-s3-access"
-  role = aws_iam_role.ecs_exec_role.id
+  role = aws_iam_role.ecs_task_execution_role.id
 
   policy = jsonencode({
     Version = "2012-10-17"
@@ -47,14 +49,6 @@ resource "aws_iam_role_policy" "ecs_s3_access" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_exec_policy" {
-  role       = aws_iam_role.ecs_exec_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
-}
 
 
 
-output "ecs_exec_role_arn" {
-  value = aws_iam_role.ecs_exec_role.arn  # Reference the actual IAM role resource
-  description = "ARN of the ECS task execution IAM role"
-}
