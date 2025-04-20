@@ -100,12 +100,12 @@ resource "aws_ssm_parameter" "app_config" {
   #overwrite = true
 }
 
-resource "aws_secretsmanager_secret" "db_password" {
-  name = "/${local.prefix}/db_password"
+resource "aws_secretsmanager_secret" "db_pw" {
+  name = "/${local.prefix}/db_pw"
 }
 
-resource "aws_secretsmanager_secret_version" "db_password_version" {
-  secret_id     = aws_secretsmanager_secret.db_password.id
+resource "aws_secretsmanager_secret_version" "db_pw_version" {
+  secret_id     = aws_secretsmanager_secret.db_pw.id
   secret_string = jsonencode({
     password = "P@ssw0rd"
   })
