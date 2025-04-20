@@ -71,7 +71,7 @@ resource "aws_ecs_task_definition" "flask_app_task" {
       "logConfiguration": {
         "logDriver" : "awslogs",
         "options"   : {
-          "awslogs-group"         : "/ecs/flask-app-xray",
+          "awslogs-group"         :  local.log_group_name,#"/ecs/flask-app-xray",
           "awslogs-region"        : "us-east-1",
           "awslogs-stream-prefix" : "xray-sidecar"
         }
