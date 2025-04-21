@@ -1,9 +1,10 @@
+# create log grp /ecs/myapp-app
 locals {
   log_group_name = "/ecs/${local.prefix}-app"  # Single source of truth
 }
 
-# Reference in both places:
-resource "aws_cloudwatch_log_group" "app" {
+# create log grp /ecs/myapp-app
+resource "aws_cloudwatch_log_group" "ecs_logs" {
   name = local.log_group_name
 }
 

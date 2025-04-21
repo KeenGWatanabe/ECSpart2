@@ -164,12 +164,6 @@ module "ecs" {
   }
 }
 
-# Create CloudWatch Log Group for ECS
-resource "aws_cloudwatch_log_group" "ecs_logs" {
-  name              = "/ecs/${local.prefix}-task"  # Standard naming format
-  retention_in_days = 7  # Adjust retention (1, 3, 7, 14, 30, 60, 90, 120, 150, 180, 365, 400, 545, 731, 1827, or 3653)
-}
-
 
 # --- Outputs ---
 output "ecr_repository_url" {
