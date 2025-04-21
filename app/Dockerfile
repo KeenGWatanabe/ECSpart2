@@ -1,18 +1,26 @@
-# Using latest base image  from DockerHub
+ # (1)
 FROM python:latest
 
-#Creating working directory inside container#
+# Create non-root user and set permissions (2)
+RUN useradd -m appuser && \
+    mkdir -p /app && \
+    chown appuser:appuser /app
 WORKDIR /app
+# (3)
+USER appuser  
 
-#Copy source code into working directory inside container
-COPY . /app
+# Use virtual environment (4)
+RUN python -m venv /app/venv
+ENV PATH="/app/venv/bin:$PATH"
 
-#Install flask inside container
-RUN pip install -r requirements.txt
+# Install dependencies (5)
+COPY --chown=appuser:appuser requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-#Expose container port
-EXPOSE 8080
+# Copy app code (6)
+COPY --chown=appuser:appuser . .
+# (7)
+EXPOSE 8080  
 
-#Start flask app
-ENTRYPOINT ["python"]
-CMD ["app.py"]
+# Run the app (8)
+CMD ["python", "app.py"]

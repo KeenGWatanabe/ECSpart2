@@ -1,3 +1,5 @@
+status: last update was dockerfile, may not be the case, "image failure investigation and db_password duplication"
+
 run tf-backend
 https://github.com/KeenGWatanabe/tf-backend.git
 
