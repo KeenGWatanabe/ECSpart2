@@ -8,12 +8,14 @@ https://github.com/KeenGWatanabe/tf-backend.git
 2 terraform init
 3 terraform apply -target=aws_ecr_repository.app
 
+
 Follow steps 3 - 4 from this Doc sheet (build and push image to created ECR)
-4 cd /app
+cd /app
 # 3.5 Container Orchestration w ECS2
 https://docs.google.com/document/d/1HkjQakCw2Db82e5dPbWzfqm_BnWK0xHMiWXixuojW4k/edit?tab=t.0
 
 # if iam_role exists, else only run step 1,2 & 4
+<change db_password to be unique (optional)>
 3 terraform import aws_iam_role.ecs_exec_role myapp-ecs-exec-role
 4 terraform apply 
   # if rerun terraform (statefile)
