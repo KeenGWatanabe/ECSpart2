@@ -4,7 +4,7 @@ from aws_xray_sdk.core import xray_recorder
 from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 
 app_config = os.environ.get('MY_APP_CONFIG')
-db_password = os.environ.get('MY_DB_PASSWORD')
+db_pass = os.environ.get('MY_DB_PASS')
 service_name = os.environ.get('SERVICE_NAME')
 
 app = Flask(__name__)
@@ -17,7 +17,7 @@ def index():
     return jsonify({
         "message": "Hello from Flask!",
         "app_config": app_config,
-        "db_password": db_password
+        "db_pass": db_pass
     })
 
 if __name__ == "__main__":

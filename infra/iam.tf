@@ -13,7 +13,7 @@ resource "aws_iam_role_policy" "ecs_secrets_access" {
           "secretsmanager:DescribeSecret"
         ]
         Resource = [
-          "arn:aws:secretsmanager:us-east-1:255945442255:secret:${local.prefix}/db_password*",
+          "arn:aws:secretsmanager:us-east-1:255945442255:secret:${local.prefix}/db_pass*",
           # Add other secret ARNs if needed
         ]
       }
